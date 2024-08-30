@@ -6,6 +6,7 @@ import { type RTreeNode } from '../RTree/RTreeNode/RTreeNode'
 import type { Entry } from '../RTree/entry'
 
 // Функция для проверки наличия пересечения между MBR и всеми объектами в R-дереве
+// +++
 export function hasAnyIntersection (mbr: MBR, rtree: RTree): boolean {
   return searchTree(rtree.root, mbr).length > 0
 }
