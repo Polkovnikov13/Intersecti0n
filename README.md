@@ -36,7 +36,6 @@ const triangle4 = new Triangle([{ x: 0, y: 5 }, { x: 0, y: 10 }, { x: 4, y: 7 }]
 ### Вставляем объекты в R-дерево
 ```typescript
 rtree.insert(rect1, 1)
-console.log(rect1)
 rtree.insert(rect2, 2)
 rtree.insert(triangle1, 3)
 rtree.insert(triangle2, 4)
