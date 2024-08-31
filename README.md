@@ -43,7 +43,7 @@ rtree.insert(triangle2, 4)
 rtree.insert(triangle3, 5)
 rtree.insert(rect3, 6)
 rtree.insert(triangle4, 7)
-``
+```
 
 ### Пример 1: Использование функции hasAnyIntersection
 ```typescript
