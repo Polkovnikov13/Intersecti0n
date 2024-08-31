@@ -29,5 +29,9 @@ module.exports = {
     'eslint-disable @typescript-eslint/no-unsafe-argument' : 'off',
     'eslint-disable @typescript-eslint/strict-boolean-expressions' : 'off',
     'eslint-disable @typescript-eslint/restrict-template-expressions' : 'off',
+    'eslint-disable @typescript-eslint/no-non-null-assertion' : 'off',
+    'eslint-disable @typescript-eslint/strict-boolean-expressions': 'off',
+    'eslint-disable @typescript-eslint/no-non-null-assertion': 'off',
+    'eslint-disable @typescript-eslint/strict-boolean-expressions' : 'off',
     }
 }

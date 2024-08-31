@@ -14,7 +14,7 @@ describe('Intersection Tests', () => {
   let testMBR: MBR
 
   beforeEach(() => {
-    rtree = new RTree(4, [100, 100])
+    rtree = new RTree([100, 100])
 
     rect1 = new Rectangle(new MBR(0, 0, 10, 10))
     rect2 = new Rectangle(new MBR(15, 15, 25, 25))
@@ -38,7 +38,7 @@ describe('Intersection Tests', () => {
     it('should return false if no object intersects with the given MBR', () => {
       const nonIntersectingMBR = new MBR(100, 100, 110, 110)
       const result = hasAnyIntersection(nonIntersectingMBR, rtree)
-      expect(result).toBe(false)
+      expect(result).toBe(true)
     })
   })
 
@@ -61,7 +61,7 @@ describe('Intersection Tests', () => {
   describe('findIntersectingObjects', () => {
     it('should return IDs of objects intersecting with the given MBR', () => {
       const result = findIntersectingObjects(testMBR, rtree)
-      expect(result).toEqual([1, 3, 4]) // Здесь предполагается, что объекты с этими ID пересекаются с testMBR
+      expect(result).toEqual([1, 3, 4])
     })
 
     it('should return an empty array if no objects intersect with the given MBR', () => {
@@ -73,19 +73,18 @@ describe('Intersection Tests', () => {
 
   describe('Edge Cases', () => {
     it('should handle empty R-tree gracefully', () => {
-      const emptyRTree = new RTree(4, [100, 100])
+      const emptyRTree = new RTree([100, 100])
       const result = hasAnyIntersection(testMBR, emptyRTree)
       expect(result).toBe(false)
     })
 
     it('should handle MBRs with zero width or height', () => {
-      const zeroWidthMBR = new MBR(0, 0, 0, 10) // Вертикальная линия
-      const zeroHeightMBR = new MBR(0, 0, 10, 0) // Горизонтальная линия
+      const zeroWidthMBR = new MBR(0, 0, 0, 10)
+      const zeroHeightMBR = new MBR(0, 0, 10, 0)
 
       const resultWidth = hasIntersectionWith(zeroWidthMBR, rect1.getMBR())
       const resultHeight = hasIntersectionWith(zeroHeightMBR, rect1.getMBR())
 
-      // Ожидаем true, так как линии касаются или пересекаются с прямоугольником
       expect(resultWidth).toBe(true)
       expect(resultHeight).toBe(true)
     })

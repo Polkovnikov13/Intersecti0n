@@ -8,7 +8,7 @@ describe('RTree', () => {
   let rtree: RTree
 
   beforeEach(() => {
-    rtree = new RTree(4, [100, 100])
+    rtree = new RTree([100, 100])
   })
 
   test('adjustTree should properly adjust the tree after insertion', () => {

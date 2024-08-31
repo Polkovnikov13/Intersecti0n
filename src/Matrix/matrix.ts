@@ -1,70 +1,58 @@
-export type MatrixTypes =
-Uint8Array |
-Uint8ClampedArray |
-Int8Array |
-Uint16Array |
-Int16Array |
-Uint32Array |
-Int32Array |
-Float32Array |
-Float64Array |
-BigUint64Array |
-BigInt64Array
+type TypedArray =
+  | Uint8Array
+  | Uint8ClampedArray
+  | Int8Array
+  | Uint16Array
+  | Int16Array
+  | Uint32Array
+  | Int32Array
+  | Float32Array
+  | Float64Array
+  | BigUint64Array
+  | BigInt64Array
 
-type TypedArray<T> = new (capacity: number) => T
+export class Matrix<T extends TypedArray> {
+  private data: T
+  private readonly dimensions: number[]
 
-export class Matrix<T extends MatrixTypes> {
-  readonly dimension: number[]
-  mapping: number[]
-
-  array: T
-  readonly TypedArray: TypedArray<T>
-
-  get buffer () {
-    return this.array.buffer
+  constructor (TypedArray: new (size: number) => T, ...dimensions: number[]) {
+    this.dimensions = dimensions
+    const totalSize = dimensions.reduce((acc, dim) => acc * dim, 1)
+    this.data = new TypedArray(totalSize)
   }
 
-  constructor (TypedArray: TypedArray<T>, ...dimension: number[]) {
-    if (!dimension.every((value) => value > 1 || value % 1 === 0)) {
-      throw new TypeError('Dimension values can only be positive integers')
-    }
-    // x + y * xSize + z * xSize * ySize + t * ySize * xSize * zSize
-    this.dimension = dimension
+  get (...indices: number[]): T extends BigUint64Array | BigInt64Array ? bigint : number {
+    this.checkIndices(indices)
+    const flatIndex = this.toFlatIndex(indices)
+    return this.data[flatIndex] as any
+  }
 
-    this.mapping = dimension.map((_, i) => {
-      return i === 0 ? 1 : dimension.slice(0, i).reduce((a, b) => a * b, 1)
+  set (value: T extends BigUint64Array | BigInt64Array ? bigint : number, ...indices: number[]): void {
+    this.checkIndices(indices)
+    const flatIndex = this.toFlatIndex(indices)
+    this.data[flatIndex] = value as any
+  }
+
+  private checkIndices (indices: number[]): void {
+    if (indices.length !== this.dimensions.length) {
+      throw new Error(`Expected ${this.dimensions.length} indices but got ${indices.length}`)
+    }
+    indices.forEach((index, i) => {
+      if (index < 0 || index >= this.dimensions[i]) {
+        throw new Error(`Index ${index} out of bounds for dimension ${i}`)
+      }
     })
-
-    this.TypedArray = TypedArray
-    // выясняем емкость для массива
-    this.array = new TypedArray(dimension.reduce((r, v) => r * v, 1))
   }
 
-  changeMapping (fn: (mapping: this['mapping']) => this['mapping']) {
-    this.mapping = fn(this.mapping)
+  private toFlatIndex (indices: number[]): number {
+    return indices.reduce((acc, index, i) => acc * this.dimensions[i] + index, 0)
   }
 
-  get (...coords: number[]): T extends BigUint64Array | BigInt64Array ? bigint : number {
-    const idx = this.#getIndex(coords)
-    return this.array[idx] as any
+  getDimensions (): number[] {
+    return [...this.dimensions]
   }
 
-  set (...args: [...number[], T extends BigUint64Array | BigInt64Array ? bigint : number]) {
-    const idx = this.#getIndex(args.slice(0, -1) as number[])
-    this.array[idx] = args.at(-1) as any
-  }
-
-  * values (): IterableIterator<T extends BigUint64Array | BigInt64Array ? bigint : number> {
-    for (const value of this.array) {
-      yield value as any
-    }
-  }
-
-  #getIndex (coords: number[]): number {
-    if (coords.length !== this.dimension.length) {
-      throw new TypeError('The passed coordinates do not match the matrix dimension')
-    }
-    // сумма произведения координат на значения из мэпинг
-    return coords.reduce((res, value, i) => res + value * this.mapping[i], 0)
+  values (): IterableIterator<number> {
+    return this.data[Symbol.iterator]() as IterableIterator<number>
   }
 }
