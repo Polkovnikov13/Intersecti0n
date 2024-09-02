@@ -53,13 +53,13 @@ const intersectingIds2 = findIntersectingObjects(queryMBR2, rtree)
 console.log(`Идентификаторы пересекающихся объектов MBR2: ${intersectingIds2}`)
 
 // Пример 3: Использование функции findObjectsAbove
-const objectsAbove = findObjectsAbove(rect1, rtree) 
+const objectsAbove = findObjectsAbove(rect1, rtree)
 console.log(`Идентификаторы объектов выше прямоугольника 1: ${objectsAbove}`)
 
 // Пример 4: Использование функции findObjectsBelow
-const objectsBelow = findObjectsBelow(rect2, rtree) 
+const objectsBelow = findObjectsBelow(rect2, rtree)
 console.log(`Идентификаторы объектов ниже прямоугольника 2: ${objectsBelow}`)
 
 // Пример 5 Проверяем пересечение двух треугольников
 const doTrianglesIntersectResult = doTrianglesIntersect(triangle1, triangle2)
-console.log(`triangle1 и triangle2 пересекаются: ${doTrianglesIntersectResult}`) 
+console.log(`triangle1 и triangle2 пересекаются: ${doTrianglesIntersectResult}`)
